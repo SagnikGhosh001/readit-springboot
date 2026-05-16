@@ -1,7 +1,8 @@
 package com.sagnik.readit.service;
 
 import com.sagnik.readit.dto.UserDto;
+import com.sagnik.readit.entity.User;
 
 public interface UserService {
-    void login(UserDto userDto);
+    User login(UserDto userDto);
 }

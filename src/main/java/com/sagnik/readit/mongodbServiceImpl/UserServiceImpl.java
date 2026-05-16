@@ -6,8 +6,6 @@ import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMongoRepository userMongoRepository;
@@ -17,8 +15,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void login(UserDto userDto) {
-        User user = new User(userDto.username(), new Date());
+    public User login(UserDto userDto) {
+        User user = new User(userDto.username());
         userMongoRepository.insert(user);
+        return user;
     }
 }
