@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,7 +61,7 @@ public class PostControllerTest {
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
         when(postMongoRepository.save(any(Post.class))).thenReturn(post);
-        
+
         PostResponseDto responseBody = testClient.put()
                 .uri("/api/post/like/1/1")
                 .exchange()
@@ -125,5 +126,33 @@ public class PostControllerTest {
                 .uri("/api/post/like/1/1")
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void shouldSendNotFoundIfUserIsNotPresentForGettingUserPost() {
+        testClient.get()
+                .uri("/api/post/1")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+
+    @Test
+    void shouldSendUserUploadedPost() {
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of(
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1"))
+        ));
+
+        List responseBody = testClient.get()
+                .uri("/api/post/1")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(List.class).getResponseBody();
+
+        assert responseBody != null;
+        assertEquals(3, responseBody.size());
     }
 }

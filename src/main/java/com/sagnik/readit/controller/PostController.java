@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/post")
 public class PostController {
@@ -26,5 +28,11 @@ public class PostController {
     public ResponseEntity<PostResponseDto> toggleLike(@PathVariable String postId, @PathVariable String userId) {
         PostResponseDto post = postService.toggleLike(postId, userId);
         return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<PostResponseDto>> getUserUploadedPost(@PathVariable String userId) {
+        List<PostResponseDto> posts = postService.getUserUploadedPost(userId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 }

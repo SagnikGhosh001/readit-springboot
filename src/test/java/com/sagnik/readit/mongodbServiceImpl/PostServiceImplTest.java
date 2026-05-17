@@ -10,6 +10,7 @@ import com.sagnik.readit.responseDto.PostResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,11 +109,41 @@ public class PostServiceImplTest {
     void shouldThrowErrorForNonExistingPost() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         User user = new User("user1");
-        Post post = new Post("title", "body", user);
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
-
 
         assertThrows(NotFoundException.class, () -> postService.toggleLike("1", "1"));
     }
 
+    @Test
+    void shouldGiveUserUploadedPosts() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of(
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1"))
+        ));
+
+        List<PostResponseDto> posts = postService.getUserUploadedPost("user1");
+        assertEquals(3, posts.size());
+    }
+
+    @Test
+    void shouldGiveEmptyArrayIfNoPost() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of());
+
+        List<PostResponseDto> posts = postService.getUserUploadedPost("user1");
+        assertEquals(0, posts.size());
+    }
+
+
+    @Test
+    void shouldThrowErrorIfNoUserAvailable() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of());
+
+        assertThrows(NotFoundException.class, () -> postService.getUserUploadedPost("user1"));
+    }
 }

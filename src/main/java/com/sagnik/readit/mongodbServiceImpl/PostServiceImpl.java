@@ -10,6 +10,8 @@ import com.sagnik.readit.responseDto.PostResponseDto;
 import com.sagnik.readit.service.PostService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PostServiceImpl implements PostService {
     private final PostMongoRepository postMongoRepository;
@@ -39,5 +41,14 @@ public class PostServiceImpl implements PostService {
         Post updatedPost = post.toggleLike(user);
         Post save = postMongoRepository.save(updatedPost);
         return save.toResponse();
+    }
+
+    @Override
+    public List<PostResponseDto> getUserUploadedPost(String userId) {
+        userMongoRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
+
+        return postMongoRepository.findByUser_Id(userId)
+                .stream().map(Post::toResponse).toList();
     }
 }

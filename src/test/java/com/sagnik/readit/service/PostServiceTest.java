@@ -34,4 +34,10 @@ public class PostServiceTest {
         mockPostService.toggleLike("postId", "userId");
         verify(mockPostService).toggleLike("postId", "userId");
     }
+
+    @Test
+    void shouldCallGetUserUploadedPost() {
+        mockPostService.getUserUploadedPost("postId");
+        verify(mockPostService).getUserUploadedPost("postId");
+    }
 }

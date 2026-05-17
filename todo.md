@@ -3,6 +3,8 @@
 ## features
 
 - [] get feed
+- [] get user Post
+- [] search user
 - [X] subscribe
 - [X] like
 
