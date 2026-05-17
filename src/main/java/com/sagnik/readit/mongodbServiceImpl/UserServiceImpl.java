@@ -23,10 +23,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto login(UserRequestDto userRequestDto) {
         Optional<User> existingUser = userMongoRepository.findByUsername(userRequestDto.username());
-        if (existingUser.isPresent()) return existingUser.get().toResponse();
+        if (existingUser.isPresent()) return existingUser.get().toResponse(UserResponseDto::new);
         User user = new User(userRequestDto.username());
         userMongoRepository.insert(user);
-        return user.toResponse();
+        return user.toResponse(UserResponseDto::new);
     }
 
     @Override
@@ -40,13 +40,13 @@ public class UserServiceImpl implements UserService {
         user.toggleSubscribe(host);
         userMongoRepository.save(host);
         userMongoRepository.save(user);
-        return user.toResponse();
+        return user.toResponse(UserResponseDto::new);
     }
 
     @Override
     public List<UserResponseDto> search(String username) {
         return userMongoRepository.findByUsernameStartingWithIgnoreCase(username)
-                .stream().map(User::toResponse)
+                .stream().map(u -> u.toResponse(UserResponseDto::new))
                 .toList();
     }
 }

@@ -1,7 +1,6 @@
 package com.sagnik.readit.entity;
 
 import com.sagnik.readit.responseDto.SimpleUserDto;
-import com.sagnik.readit.responseDto.UserResponseDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -29,15 +28,17 @@ public class User {
         this.subscribed = new ArrayList<>();
     }
 
-    public UserResponseDto toResponse() {
-        List<SimpleUserDto> subscribersUserResponseDto = subscribers.stream()
-                .map(user -> new SimpleUserDto(user.id, user.username, user.createdAt))
-                .toList();
-        List<SimpleUserDto> subscribedUserResponseDto = subscribed.stream()
-                .map(user -> new SimpleUserDto(user.id, user.username, user.createdAt))
-                .toList();
+    public <T> T toResponse(UserProjector<T> projector) {
+        List<SimpleUserDto> subs = subscribers.stream()
+                .map(u -> u.toSimple(SimpleUserDto::new)).toList();
+        List<SimpleUserDto> subd = subscribed.stream()
+                .map(u -> u.toSimple(SimpleUserDto::new)).toList();
 
-        return new UserResponseDto(id, username, createdAt, subscribersUserResponseDto, subscribedUserResponseDto);
+        return projector.project(id, username, createdAt, subs, subd);
+    }
+
+    private <T> T toSimple(SimpleUserProjector<T> projector) {
+        return projector.project(id, username, createdAt);
     }
 
     @Override

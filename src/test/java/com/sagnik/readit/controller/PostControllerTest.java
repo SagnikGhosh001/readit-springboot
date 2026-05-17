@@ -6,6 +6,7 @@ import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.PostRequestDto;
 import com.sagnik.readit.responseDto.PostResponseDto;
+import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class PostControllerTest {
                 .expectStatus().isCreated()
                 .returnResult(PostResponseDto.class).getResponseBody();
         assert responseBody != null;
-        assertEquals(user.toResponse(), responseBody.user());
+        assertEquals(user.toResponse(UserResponseDto::new), responseBody.user());
         assertEquals("title", responseBody.title());
         assertEquals("body", responseBody.body());
         assertEquals(0, responseBody.likedBy().size());
@@ -70,7 +71,7 @@ public class PostControllerTest {
                 .returnResult(PostResponseDto.class).getResponseBody();
 
         assert responseBody != null;
-        assertEquals(user.toResponse(), responseBody.user());
+        assertEquals(user.toResponse(UserResponseDto::new), responseBody.user());
         assertEquals("title", responseBody.title());
         assertEquals("body", responseBody.body());
         assertEquals(1, responseBody.likedBy().size());
@@ -97,7 +98,7 @@ public class PostControllerTest {
                 .returnResult(PostResponseDto.class).getResponseBody();
 
         assert responseBody != null;
-        assertEquals(user.toResponse(), responseBody.user());
+        assertEquals(user.toResponse(UserResponseDto::new), responseBody.user());
         assertEquals("title", responseBody.title());
         assertEquals("body", responseBody.body());
         assertEquals(0, responseBody.likedBy().size());

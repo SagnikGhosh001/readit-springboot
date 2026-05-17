@@ -54,8 +54,8 @@ public class UserServiceImplTest {
         assertEquals(1, userResponseDto.subscribed().size());
         assertEquals(0, userResponseDto.subscribers().size());
 
-        assertEquals(0, host.toResponse().subscribed().size());
-        assertEquals(1, host.toResponse().subscribers().size());
+        assertEquals(0, host.toResponse(UserResponseDto::new).subscribed().size());
+        assertEquals(1, host.toResponse(UserResponseDto::new).subscribers().size());
     }
 
     @Test
@@ -70,15 +70,15 @@ public class UserServiceImplTest {
         assertEquals(1, userResponseDto1.subscribed().size());
         assertEquals(0, userResponseDto1.subscribers().size());
 
-        assertEquals(0, host.toResponse().subscribed().size());
-        assertEquals(1, host.toResponse().subscribers().size());
+        assertEquals(0, host.toResponse(UserResponseDto::new).subscribed().size());
+        assertEquals(1, host.toResponse(UserResponseDto::new).subscribers().size());
         UserResponseDto userResponseDto2 = userService.toggleSubscribe("hostId", "userId");
 
         assertEquals(0, userResponseDto2.subscribed().size());
         assertEquals(0, userResponseDto2.subscribers().size());
 
-        assertEquals(0, host.toResponse().subscribed().size());
-        assertEquals(0, host.toResponse().subscribers().size());
+        assertEquals(0, host.toResponse(UserResponseDto::new).subscribed().size());
+        assertEquals(0, host.toResponse(UserResponseDto::new).subscribers().size());
     }
 
     @Test

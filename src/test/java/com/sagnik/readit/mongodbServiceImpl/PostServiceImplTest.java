@@ -8,6 +8,7 @@ import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.PostRequestDto;
 import com.sagnik.readit.responseDto.PostResponseDto;
+import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class PostServiceImplTest {
         PostResponseDto post = postService.createPost(new PostRequestDto("title", "body", "1"));
 
         verify(postMongoRepository).insert(any(Post.class));
-        assertEquals(user.toResponse(), post.user());
+        assertEquals(user.toResponse(UserResponseDto::new), post.user());
         assertEquals("title", post.title());
         assertEquals("body", post.body());
         assertEquals(0, post.likedBy().size());
@@ -194,7 +195,7 @@ public class PostServiceImplTest {
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
 
         PostResponseDto postResponseDto = postService.deletePost("1", "1");
-        assertEquals(post.toResponse(), postResponseDto);
+        assertEquals(post.toResponse(PostResponseDto::new), postResponseDto);
     }
 
     @Test

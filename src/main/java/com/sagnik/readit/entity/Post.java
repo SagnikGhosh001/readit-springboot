@@ -1,6 +1,5 @@
 package com.sagnik.readit.entity;
 
-import com.sagnik.readit.responseDto.PostResponseDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,9 +27,9 @@ public class Post {
         likedBy = new ArrayList<>();
     }
 
-    public PostResponseDto toResponse() {
-        List<UserResponseDto> likedByResponseDtoList = likedBy.stream().map(User::toResponse).toList();
-        return new PostResponseDto(id, title, body, createdAt, likedByResponseDtoList, user.toResponse());
+    public <T> T toResponse(PostProjector<T> projector) {
+        List<UserResponseDto> likedByResponseDtoList = likedBy.stream().map(u -> u.toResponse(UserResponseDto::new)).toList();
+        return projector.project(id, title, body, createdAt, likedByResponseDtoList, user.toResponse(UserResponseDto::new));
     }
 
     public Post toggleLike(User user) {

@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
 
         Post post = new Post(postRequestDto.title(), postRequestDto.body(), user);
         postMongoRepository.insert(post);
-        return post.toResponse();
+        return post.toResponse(PostResponseDto::new);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
         Post updatedPost = post.toggleLike(user);
         Post save = postMongoRepository.save(updatedPost);
-        return save.toResponse();
+        return save.toResponse(PostResponseDto::new);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
 
         return postMongoRepository.findByUser_Id(userId)
-                .stream().map(Post::toResponse).toList();
+                .stream().map(p -> p.toResponse(PostResponseDto::new)).toList();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
         List<String> subscribed = user.subscribedIds();
 
         return postMongoRepository.findFeed(userId, subscribed)
-                .stream().map(Post::toResponse).toList();
+                .stream().map(p -> p.toResponse(PostResponseDto::new)).toList();
     }
 
     @Override
@@ -75,6 +75,6 @@ public class PostServiceImpl implements PostService {
 
         postMongoRepository.delete(post);
 
-        return post.toResponse();
+        return post.toResponse(PostResponseDto::new);
     }
 }

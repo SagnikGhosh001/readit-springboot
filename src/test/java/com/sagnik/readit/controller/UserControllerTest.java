@@ -62,8 +62,8 @@ public class UserControllerTest {
         assert responseBody != null;
         assertEquals(0, responseBody.subscribers().size());
         assertEquals(1, responseBody.subscribed().size());
-        assertEquals(1, host.toResponse().subscribers().size());
-        assertEquals(0, host.toResponse().subscribed().size());
+        assertEquals(1, host.toResponse(UserResponseDto::new).subscribers().size());
+        assertEquals(0, host.toResponse(UserResponseDto::new).subscribed().size());
     }
 
     @Test
