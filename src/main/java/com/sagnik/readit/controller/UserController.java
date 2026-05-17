@@ -5,10 +5,7 @@ import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,5 +21,11 @@ public class UserController {
     public ResponseEntity<UserResponseDto> login(@RequestBody UserRequestDto userRequestDto) {
         UserResponseDto loginResponse = userService.login(userRequestDto);
         return new ResponseEntity<>(loginResponse, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/toggle-subscribe/{hostId}/{userId}")
+    public ResponseEntity<UserResponseDto> toggleSubscribe(@PathVariable String hostId, @PathVariable String userId) {
+        UserResponseDto response = userService.toggleSubscribe(hostId, userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

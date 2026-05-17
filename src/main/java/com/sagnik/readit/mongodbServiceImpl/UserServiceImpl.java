@@ -1,6 +1,7 @@
 package com.sagnik.readit.mongodbServiceImpl;
 
 import com.sagnik.readit.entity.User;
+import com.sagnik.readit.exception.NotFoundException;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
@@ -23,6 +24,18 @@ public class UserServiceImpl implements UserService {
         if (existingUser.isPresent()) return existingUser.get().toResponse();
         User user = new User(userRequestDto.username());
         userMongoRepository.insert(user);
+        return user.toResponse();
+    }
+
+    @Override
+    public UserResponseDto toggleSubscribe(String hostId, String userId) {
+        User user = userMongoRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
+        User host = userMongoRepository.findById(hostId)
+                .orElseThrow(() -> new NotFoundException(String.format("Host is not found with id %s", hostId)));
+        user.toggleSubscribe(host);
+        userMongoRepository.save(host);
+        userMongoRepository.save(user);
         return user.toResponse();
     }
 }

@@ -2,8 +2,9 @@
 
 ## features
 
-- [] like
 - [] get feed
+- [X] subscribe
+- [X] like
 
 ## improvement
 

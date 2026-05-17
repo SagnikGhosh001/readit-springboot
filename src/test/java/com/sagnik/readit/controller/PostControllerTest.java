@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.client.RestTestClient;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -58,7 +59,8 @@ public class PostControllerTest {
 
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
-
+        when(postMongoRepository.save(any(Post.class))).thenReturn(post);
+        
         PostResponseDto responseBody = testClient.put()
                 .uri("/api/post/like/1/1")
                 .exchange()
@@ -79,6 +81,7 @@ public class PostControllerTest {
 
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
+        when(postMongoRepository.save(any(Post.class))).thenReturn(post);
 
         testClient.put()
                 .uri("/api/post/like/1/1")
@@ -117,7 +120,7 @@ public class PostControllerTest {
         Post post = new Post("title", "body", user);
 
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
-        
+
         testClient.put()
                 .uri("/api/post/like/1/1")
                 .exchange()

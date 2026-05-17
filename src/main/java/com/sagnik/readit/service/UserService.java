@@ -5,4 +5,6 @@ import com.sagnik.readit.responseDto.UserResponseDto;
 
 public interface UserService {
     UserResponseDto login(UserRequestDto userRequestDto);
+
+    UserResponseDto toggleSubscribe(String hostId, String userId);
 }

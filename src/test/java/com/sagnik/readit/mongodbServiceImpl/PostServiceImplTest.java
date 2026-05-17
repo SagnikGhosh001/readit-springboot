@@ -57,6 +57,7 @@ public class PostServiceImplTest {
         Post post = new Post("title", "body", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+        when(postMongoRepository.save(any(Post.class))).thenReturn(post);
 
         PostResponseDto postResponseDto = postService.toggleLike("1", "1");
         assertEquals(1, postResponseDto.likedBy().size());
@@ -69,6 +70,7 @@ public class PostServiceImplTest {
 //        Post post = new Post("title", "body", user);
 //        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
 //        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+//        when(postMongoRepository.save(any(Post.class))).thenReturn(post);
 //
 //        PostResponseDto postResponseDto1 = postService.toggleLike("1", "1");
 //        assertEquals(1, postResponseDto1.likedBy().size());
@@ -84,6 +86,7 @@ public class PostServiceImplTest {
         Post post = new Post("title", "body", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+        when(postMongoRepository.save(any(Post.class))).thenReturn(post);
 
         PostResponseDto postResponseDto1 = postService.toggleLike("1", "1");
         assertEquals(1, postResponseDto1.likedBy().size());
