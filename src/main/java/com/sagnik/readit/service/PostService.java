@@ -5,4 +5,6 @@ import com.sagnik.readit.responseDto.PostResponseDto;
 
 public interface PostService {
     PostResponseDto createPost(PostRequestDto postRequestDto);
+
+    PostResponseDto toggleLike(String postId, String userId);
 }

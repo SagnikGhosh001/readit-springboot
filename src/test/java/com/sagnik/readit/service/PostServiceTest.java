@@ -8,8 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PostServiceTest {
     PostService mockPostService;
@@ -28,5 +27,11 @@ public class PostServiceTest {
 
         PostResponseDto newPost = mockPostService.createPost(postRequestDto);
         assertEquals(post, newPost);
+    }
+
+    @Test
+    void shouldCallToggleLike() {
+        mockPostService.toggleLike("postId", "userId");
+        verify(mockPostService).toggleLike("postId", "userId");
     }
 }

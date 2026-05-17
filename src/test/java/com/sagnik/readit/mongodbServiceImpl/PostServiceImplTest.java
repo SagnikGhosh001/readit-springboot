@@ -28,21 +28,88 @@ public class PostServiceImplTest {
         userMongoRepository = mock(UserMongoRepository.class);
     }
 
+
     @Test
     void shouldCreateTestWithUser() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         User user = new User("user1");
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         PostResponseDto post = postService.createPost(new PostRequestDto("title", "body", "1"));
+
         verify(postMongoRepository).insert(any(Post.class));
         assertEquals(user.toResponse(), post.user());
         assertEquals("title", post.title());
         assertEquals("body", post.body());
+        assertEquals(0, post.likedBy().size());
     }
+
 
     @Test
     void shouldThrowNotFoundExceptionIfUserDoesNotExist() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         assertThrows(NotFoundException.class, () -> postService.createPost(new PostRequestDto("title", "body", "1")));
     }
+
+    @Test
+    void shouldLikeForNewUser() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = new User("user1");
+        Post post = new Post("title", "body", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        PostResponseDto postResponseDto = postService.toggleLike("1", "1");
+        assertEquals(1, postResponseDto.likedBy().size());
+    }
+
+//    @Test
+//    void shouldLikeForNewUsers() {
+//        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+//        User user = new User("user1");
+//        Post post = new Post("title", "body", user);
+//        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+//        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+//
+//        PostResponseDto postResponseDto1 = postService.toggleLike("1", "1");
+//        assertEquals(1, postResponseDto1.likedBy().size());
+//        PostResponseDto postResponseDto2 = postService.toggleLike("1", "2");
+//        assertEquals(2, postResponseDto2.likedBy().size());
+//    }
+
+
+    @Test
+    void shouldUnLikeForExistingUser() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = new User("user1");
+        Post post = new Post("title", "body", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        PostResponseDto postResponseDto1 = postService.toggleLike("1", "1");
+        assertEquals(1, postResponseDto1.likedBy().size());
+        PostResponseDto postResponseDto2 = postService.toggleLike("1", "1");
+        assertEquals(0, postResponseDto2.likedBy().size());
+    }
+
+    @Test
+    void shouldThrowErrorForNonExistingUser() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = new User("user1");
+        Post post = new Post("title", "body", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+
+        assertThrows(NotFoundException.class, () -> postService.toggleLike("1", "1"));
+    }
+
+    @Test
+    void shouldThrowErrorForNonExistingPost() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = new User("user1");
+        Post post = new Post("title", "body", user);
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+
+        assertThrows(NotFoundException.class, () -> postService.toggleLike("1", "1"));
+    }
+
 }

@@ -5,10 +5,7 @@ import com.sagnik.readit.responseDto.PostResponseDto;
 import com.sagnik.readit.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/post")
@@ -23,5 +20,11 @@ public class PostController {
     public ResponseEntity<PostResponseDto> post(@RequestBody PostRequestDto postRequestDto) {
         PostResponseDto post = postService.createPost(postRequestDto);
         return new ResponseEntity<>(post, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/like/{postId}/{userId}")
+    public ResponseEntity<PostResponseDto> toggleLike(@PathVariable String postId, @PathVariable String userId) {
+        PostResponseDto post = postService.toggleLike(postId, userId);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 }

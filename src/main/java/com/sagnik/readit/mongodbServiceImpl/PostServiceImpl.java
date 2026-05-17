@@ -29,4 +29,15 @@ public class PostServiceImpl implements PostService {
         postMongoRepository.insert(post);
         return post.toResponse();
     }
+
+    @Override
+    public PostResponseDto toggleLike(String postId, String userId) {
+        Post post = postMongoRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(String.format("Post is not found with id %s", postId)));
+        User user = userMongoRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
+        post.toggleLike(user);
+
+        return post.toResponse();
+    }
 }
