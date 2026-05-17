@@ -4,6 +4,7 @@ import com.sagnik.readit.entity.User;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
+import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -44,8 +45,8 @@ public class UserControllerTest {
     @Test
     void shouldSubscribe() {
         UserRequestDto userRequestDto = new UserRequestDto("sagnik");
-        User user = new User("user");
-        User host = new User("host");
+        User user = TestFactory.user("user");
+        User host = TestFactory.user("host");
 
         when(userMongoRepository.findById("host")).thenReturn(Optional.of(host));
         when(userMongoRepository.findById("user")).thenReturn(Optional.of(user));
@@ -66,7 +67,7 @@ public class UserControllerTest {
 
     @Test
     void shouldGiveNotFoundIfHostIsMissing() {
-        User user = new User("user");
+        User user = TestFactory.user("1");
 
         when(userMongoRepository.findById("user")).thenReturn(Optional.of(user));
         when(userMongoRepository.save(any(User.class))).thenReturn(user);
@@ -79,7 +80,7 @@ public class UserControllerTest {
 
     @Test
     void shouldGiveNotFoundIfUserIsMissing() {
-        User host = new User("host");
+        User host = TestFactory.user("1");
 
         when(userMongoRepository.findById("host")).thenReturn(Optional.of(host));
 

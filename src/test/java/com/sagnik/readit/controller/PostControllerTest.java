@@ -6,6 +6,7 @@ import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.PostRequestDto;
 import com.sagnik.readit.responseDto.PostResponseDto;
+import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -37,7 +38,7 @@ public class PostControllerTest {
     void shouldCreatePost() {
 
         PostRequestDto postRequestDto = new PostRequestDto("title", "body", "1");
-        User user = new User("user1");
+        User user = TestFactory.user("1");
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
 
         PostResponseDto responseBody = testClient.post()
@@ -55,8 +56,8 @@ public class PostControllerTest {
 
     @Test
     void shouldLikePost() {
-        User user = new User("user1");
-        Post post = new Post("title", "body", user);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
 
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
@@ -77,8 +78,8 @@ public class PostControllerTest {
 
     @Test
     void shouldUnlikeLikePost() {
-        User user = new User("user1");
-        Post post = new Post("title", "body", user);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
 
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
@@ -105,7 +106,7 @@ public class PostControllerTest {
 
     @Test
     void shouldSendNotFoundIfPostIsNotPresent() {
-        User user = new User("user1");
+        User user = TestFactory.user("1");
 
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
 
@@ -117,8 +118,8 @@ public class PostControllerTest {
 
     @Test
     void shouldSendNotFoundIfUserIsNotPresent() {
-        User user = new User("user1");
-        Post post = new Post("title", "body", user);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("title", user);
 
         when(postMongoRepository.findById("1")).thenReturn(Optional.of(post));
 
@@ -139,11 +140,11 @@ public class PostControllerTest {
 
     @Test
     void shouldSendUserUploadedPost() {
-        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(TestFactory.user("1")));
         when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of(
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1"))
+                TestFactory.post("title1", TestFactory.user("1")),
+                TestFactory.post("title1", TestFactory.user("1")),
+                TestFactory.post("title1", TestFactory.user("1"))
         ));
 
         List responseBody = testClient.get()
@@ -167,11 +168,11 @@ public class PostControllerTest {
 
     @Test
     void shouldSendUserFeed() {
-        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(TestFactory.user("1")));
         when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of(
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1"))
+                TestFactory.post("title1", TestFactory.user("1")),
+                TestFactory.post("title1", TestFactory.user("1")),
+                TestFactory.post("title1", TestFactory.user("1"))
         ));
 
         List responseBody = testClient.get()
@@ -182,5 +183,63 @@ public class PostControllerTest {
 
         assert responseBody != null;
         assertEquals(3, responseBody.size());
+    }
+
+    @Test
+    void shouldDeletePost() {
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        PostResponseDto responseBody = testClient.delete()
+                .uri("/api/post/1/1")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(PostResponseDto.class).getResponseBody();
+
+        assert responseBody != null;
+        assertEquals("1", responseBody.id());
+    }
+
+    @Test
+    void shouldNotDeletePostForOtherPostDeleteRequest() {
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        testClient.delete()
+                .uri("/api/post/1/2")
+                .exchange()
+                .expectStatus().isBadRequest();
+
+    }
+
+
+    @Test
+    void shouldGiveNotFoundIfPostIsMissing() {
+        User user = TestFactory.user("1");
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        testClient.delete()
+                .uri("/api/post/1/2")
+                .exchange()
+                .expectStatus().isNotFound();
+
+    }
+
+
+    @Test
+    void shouldGiveNotFoundIfUserIsMissing() {
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+
+        testClient.delete()
+                .uri("/api/post/1/2")
+                .exchange()
+                .expectStatus().isNotFound();
+
     }
 }

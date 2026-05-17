@@ -71,4 +71,8 @@ public class User {
         host.subscribers.add(this);
         this.subscribed.add(host);
     }
+
+    public boolean isIdEqual(String userId) {
+        return Objects.equals(id, userId);
+    }
 }

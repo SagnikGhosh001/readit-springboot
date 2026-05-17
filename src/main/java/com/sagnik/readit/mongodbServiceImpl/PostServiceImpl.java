@@ -2,6 +2,7 @@ package com.sagnik.readit.mongodbServiceImpl;
 
 import com.sagnik.readit.entity.Post;
 import com.sagnik.readit.entity.User;
+import com.sagnik.readit.exception.BadRequestException;
 import com.sagnik.readit.exception.NotFoundException;
 import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
@@ -63,5 +64,20 @@ public class PostServiceImpl implements PostService {
 
         return postMongoRepository.findFeed(userId, subscribed)
                 .stream().map(Post::toResponse).toList();
+    }
+
+    @Override
+    public PostResponseDto deletePost(String postId, String userId) {
+        userMongoRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
+        Post post = postMongoRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(String.format("Post is not found with id %s", postId)));
+
+        if (!post.isUserPost(userId))
+            throw new BadRequestException("This is not Your Post");
+
+        postMongoRepository.delete(post);
+
+        return post.toResponse();
     }
 }

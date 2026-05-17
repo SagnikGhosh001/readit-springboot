@@ -41,10 +41,15 @@ public class PostServiceTest {
         verify(mockPostService).getUserUploadedPost("postId");
     }
 
-
     @Test
     void shouldCallGetUserFeed() {
         mockPostService.getUserFeed("postId");
         verify(mockPostService).getUserFeed("postId");
+    }
+
+    @Test
+    void shouldCallDeletePost() {
+        mockPostService.deletePost("postId", "userId");
+        verify(mockPostService).deletePost("postId", "userId");
     }
 }

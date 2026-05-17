@@ -2,11 +2,13 @@ package com.sagnik.readit.mongodbServiceImpl;
 
 import com.sagnik.readit.entity.Post;
 import com.sagnik.readit.entity.User;
+import com.sagnik.readit.exception.BadRequestException;
 import com.sagnik.readit.exception.NotFoundException;
 import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.PostRequestDto;
 import com.sagnik.readit.responseDto.PostResponseDto;
+import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,11 +31,10 @@ public class PostServiceImplTest {
         userMongoRepository = mock(UserMongoRepository.class);
     }
 
-
     @Test
     void shouldCreateTestWithUser() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        User user = new User("user1");
+        User user = TestFactory.user("1");
         when(userMongoRepository.findById("1")).thenReturn(Optional.of(user));
         PostResponseDto post = postService.createPost(new PostRequestDto("title", "body", "1"));
 
@@ -54,8 +55,8 @@ public class PostServiceImplTest {
     @Test
     void shouldLikeForNewUser() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        User user = new User("user1");
-        Post post = new Post("title", "body", user);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
         when(postMongoRepository.save(any(Post.class))).thenReturn(post);
@@ -64,27 +65,11 @@ public class PostServiceImplTest {
         assertEquals(1, postResponseDto.likedBy().size());
     }
 
-//    @Test
-//    void shouldLikeForNewUsers() {
-//        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-//        User user = new User("user1");
-//        Post post = new Post("title", "body", user);
-//        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
-//        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
-//        when(postMongoRepository.save(any(Post.class))).thenReturn(post);
-//
-//        PostResponseDto postResponseDto1 = postService.toggleLike("1", "1");
-//        assertEquals(1, postResponseDto1.likedBy().size());
-//        PostResponseDto postResponseDto2 = postService.toggleLike("1", "2");
-//        assertEquals(2, postResponseDto2.likedBy().size());
-//    }
-
-
     @Test
     void shouldUnLikeForExistingUser() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        User user = new User("user1");
-        Post post = new Post("title", "body", user);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("1", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
         when(postMongoRepository.save(any(Post.class))).thenReturn(post);
@@ -98,8 +83,8 @@ public class PostServiceImplTest {
     @Test
     void shouldThrowErrorForNonExistingUser() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        User user = new User("user1");
-        Post post = new Post("title", "body", user);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("title", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
 
         assertThrows(NotFoundException.class, () -> postService.toggleLike("1", "1"));
@@ -108,7 +93,7 @@ public class PostServiceImplTest {
     @Test
     void shouldThrowErrorForNonExistingPost() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        User user = new User("user1");
+        User user = TestFactory.user("1");
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
 
         assertThrows(NotFoundException.class, () -> postService.toggleLike("1", "1"));
@@ -117,11 +102,11 @@ public class PostServiceImplTest {
     @Test
     void shouldGiveUserUploadedPosts() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(TestFactory.user("user1")));
         when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of(
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1"))
+                TestFactory.post("1", TestFactory.user("1")),
+                TestFactory.post("1", TestFactory.user("1")),
+                TestFactory.post("1", TestFactory.user("1"))
         ));
 
         List<PostResponseDto> posts = postService.getUserUploadedPost("user1");
@@ -131,7 +116,7 @@ public class PostServiceImplTest {
     @Test
     void shouldGiveEmptyArrayIfNoPost() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(TestFactory.user("1")));
         when(postMongoRepository.findByUser_Id(any(String.class))).thenReturn(List.of());
 
         List<PostResponseDto> posts = postService.getUserUploadedPost("user1");
@@ -150,11 +135,11 @@ public class PostServiceImplTest {
     @Test
     void shouldGiveUserFeed() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(TestFactory.user("1")));
         when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of(
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1")),
-                new Post("title1", "body", new User("user1"))
+                TestFactory.post("1", TestFactory.user("1")),
+                TestFactory.post("1", TestFactory.user("1")),
+                TestFactory.post("1", TestFactory.user("1"))
         ));
 
         List<PostResponseDto> posts = postService.getUserFeed("user1");
@@ -164,7 +149,7 @@ public class PostServiceImplTest {
     @Test
     void shouldGiveEmptyArrayIfNoPostInUserFeed() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
-        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(TestFactory.user("1")));
         when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of());
 
         List<PostResponseDto> posts = postService.getUserFeed("user1");
@@ -178,5 +163,48 @@ public class PostServiceImplTest {
         when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of());
 
         assertThrows(NotFoundException.class, () -> postService.getUserUploadedPost("user1"));
+    }
+
+    @Test
+    void shouldThrowErrorForNonExistingPostForDeletePost() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = TestFactory.user("1");
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        assertThrows(NotFoundException.class, () -> postService.deletePost("1", "1"));
+    }
+
+
+    @Test
+    void shouldThrowErrorForNonExistingUserForDeletePost() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("title", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+
+        assertThrows(NotFoundException.class, () -> postService.deletePost("1", "1"));
+    }
+
+    @Test
+    void shouldReturnDeletedPost() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = TestFactory.user("1");
+        Post post = TestFactory.post("title", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        PostResponseDto postResponseDto = postService.deletePost("1", "1");
+        assertEquals(post.toResponse(), postResponseDto);
+    }
+
+    @Test
+    void shouldNotDeletePostForTryingToDeleteOtherPost() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        User user = TestFactory.user("user1");
+        Post post = TestFactory.post("title", user);
+        when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
+
+        assertThrows(BadRequestException.class, () -> postService.deletePost("1", "2"));
     }
 }

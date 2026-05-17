@@ -4,7 +4,7 @@
 
 - [] delete post
 - [] search user
-- [] get feed
+- [X] get feed
 - [X] get user Post
 - [X] subscribe
 - [X] like

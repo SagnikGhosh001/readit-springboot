@@ -42,4 +42,10 @@ public class PostController {
         List<PostResponseDto> posts = postService.getUserFeed(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{postId}/{userId}")
+    public ResponseEntity<PostResponseDto> deletePost(@PathVariable String postId, @PathVariable String userId) {
+        PostResponseDto post = postService.deletePost(postId, userId);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
 }

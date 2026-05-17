@@ -66,4 +66,8 @@ public class Post {
                 ", likedBy=" + likedBy +
                 '}';
     }
+
+    public boolean isUserPost(String userId) {
+        return user.isIdEqual(userId);
+    }
 }

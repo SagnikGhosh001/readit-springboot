@@ -13,4 +13,6 @@ public interface PostService {
     List<PostResponseDto> getUserUploadedPost(String userId);
 
     List<PostResponseDto> getUserFeed(String userId);
+
+    PostResponseDto deletePost(String postId, String userId);
 }

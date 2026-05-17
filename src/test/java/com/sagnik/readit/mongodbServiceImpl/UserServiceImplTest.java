@@ -5,6 +5,7 @@ import com.sagnik.readit.exception.NotFoundException;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
+import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,8 +44,8 @@ public class UserServiceImplTest {
     @Test
     void shouldSubscribeToHostIfNotSubscribed() {
         UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
-        User host = new User("host");
-        User user = new User("user");
+        User host = TestFactory.user("hostId");
+        User user = TestFactory.user("userId");
 
         when(mockUserRepo.findById("hostId")).thenReturn(Optional.of(host));
         when(mockUserRepo.findById("userId")).thenReturn(Optional.of(user));
@@ -59,8 +60,8 @@ public class UserServiceImplTest {
     @Test
     void shouldRemoveSubscribeToHostIfAlreadySubscribed() {
         UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
-        User host = new User("host");
-        User user = new User("user");
+        User host = TestFactory.user("hostId");
+        User user = TestFactory.user("userId");
 
         when(mockUserRepo.findById("hostId")).thenReturn(Optional.of(host));
         when(mockUserRepo.findById("userId")).thenReturn(Optional.of(user));
@@ -82,7 +83,7 @@ public class UserServiceImplTest {
     @Test
     void shouldThrowErrorIfHostIsNotPresent() {
         UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
-        User user = new User("user");
+        User user = TestFactory.user("userId");
 
         when(mockUserRepo.findById("userId")).thenReturn(Optional.of(user));
         assertThrows(NotFoundException.class, () -> userService.toggleSubscribe("hostId", "userId"));
@@ -91,7 +92,7 @@ public class UserServiceImplTest {
     @Test
     void shouldThrowErrorIfUserIsNotPresent() {
         UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
-        User host = new User("host");
+        User host = TestFactory.user("hostId");
         when(mockUserRepo.findById("hostId")).thenReturn(Optional.of(host));
 
         assertThrows(NotFoundException.class, () -> userService.toggleSubscribe("hostId", "userId"));
