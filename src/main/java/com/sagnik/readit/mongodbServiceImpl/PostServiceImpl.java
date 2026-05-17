@@ -36,8 +36,8 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException(String.format("Post is not found with id %s", postId)));
         User user = userMongoRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
-        post.toggleLike(user);
-
-        return post.toResponse();
+        Post updatedPost = post.toggleLike(user);
+        Post save = postMongoRepository.save(updatedPost);
+        return save.toResponse();
     }
 }

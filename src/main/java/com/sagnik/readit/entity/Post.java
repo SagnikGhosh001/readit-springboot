@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Document("feed")
 public class Post {
@@ -17,7 +18,7 @@ public class Post {
     private final String body;
     private final Date createdAt;
     private final User user;
-    private final List<User> likedBy;
+    private List<User> likedBy;
 
     public Post(String title, String body, User user) {
         this.title = title;
@@ -32,12 +33,37 @@ public class Post {
         return new PostResponseDto(id, title, body, createdAt, likedByResponseDtoList, user.toResponse());
     }
 
-    public void toggleLike(User user) {
+    public Post toggleLike(User user) {
         if (likedBy.contains(user)) {
             likedBy.remove(user);
-            return;
+            return this;
         }
 
         likedBy.add(user);
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", createdAt=" + createdAt +
+                ", user=" + user +
+                ", likedBy=" + likedBy +
+                '}';
     }
 }

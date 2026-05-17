@@ -10,7 +10,8 @@
 - [X] create a value object for sending response (ResponseDto)
 - [X] exception handling
 - [] projector like ashish's example
+- [] add swagger
 
 # bug
 
-- [] user created at changing everytime
+- [X] user created at changing everytime
