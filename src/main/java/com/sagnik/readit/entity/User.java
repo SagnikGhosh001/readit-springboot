@@ -75,4 +75,8 @@ public class User {
     public boolean isIdEqual(String userId) {
         return Objects.equals(id, userId);
     }
+
+    public List<String> subscribedIds() {
+        return subscribed.stream().map(u -> u.id).toList();
+    }
 }

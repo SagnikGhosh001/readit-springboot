@@ -8,7 +8,6 @@ import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.requestDto.PostRequestDto;
 import com.sagnik.readit.responseDto.PostResponseDto;
-import com.sagnik.readit.responseDto.SimpleUserDto;
 import com.sagnik.readit.service.PostService;
 import org.springframework.stereotype.Service;
 
@@ -58,9 +57,7 @@ public class PostServiceImpl implements PostService {
     public List<PostResponseDto> getUserFeed(String userId) {
         User user = userMongoRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", userId)));
-        List<String> subscribed = user
-                .toResponse().subscribed().stream()
-                .map(SimpleUserDto::id).toList();
+        List<String> subscribed = user.subscribedIds();
 
         return postMongoRepository.findFeed(userId, subscribed)
                 .stream().map(Post::toResponse).toList();
