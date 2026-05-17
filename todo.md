@@ -2,8 +2,8 @@
 
 ## features
 
-- [] delete post
 - [] search user
+- [x] delete post
 - [X] get feed
 - [X] get user Post
 - [X] subscribe

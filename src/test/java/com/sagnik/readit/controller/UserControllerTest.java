@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,7 +82,6 @@ public class UserControllerTest {
     @Test
     void shouldGiveNotFoundIfUserIsMissing() {
         User host = TestFactory.user("1");
-
         when(userMongoRepository.findById("host")).thenReturn(Optional.of(host));
 
         testClient.put()
@@ -89,6 +89,24 @@ public class UserControllerTest {
                 .exchange()
                 .expectStatus().isNotFound();
 
+    }
+
+    @Test
+    void shouldGiveSearchedUser() {
+        when(userMongoRepository.findByUsernameStartingWithIgnoreCase(any(String.class))).thenReturn(List.of(
+                TestFactory.user("1"),
+                TestFactory.user("2"),
+                TestFactory.user("3")
+        ));
+
+        List responseBody = testClient.get()
+                .uri("/api/user/search/user")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(List.class).getResponseBody();
+
+        assert responseBody != null;
+        assertEquals(3, responseBody.size());
     }
 
 }

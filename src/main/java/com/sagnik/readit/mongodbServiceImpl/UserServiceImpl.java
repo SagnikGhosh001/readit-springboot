@@ -9,6 +9,7 @@ import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +41,12 @@ public class UserServiceImpl implements UserService {
         userMongoRepository.save(host);
         userMongoRepository.save(user);
         return user.toResponse();
+    }
+
+    @Override
+    public List<UserResponseDto> search(String username) {
+        return userMongoRepository.findByUsernameStartingWithIgnoreCase(username)
+                .stream().map(User::toResponse)
+                .toList();
     }
 }

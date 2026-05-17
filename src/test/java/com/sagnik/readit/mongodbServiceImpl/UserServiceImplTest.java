@@ -9,6 +9,7 @@ import com.sagnik.readit.testFactory.TestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,5 +97,27 @@ public class UserServiceImplTest {
         when(mockUserRepo.findById("hostId")).thenReturn(Optional.of(host));
 
         assertThrows(NotFoundException.class, () -> userService.toggleSubscribe("hostId", "userId"));
+    }
+
+    @Test
+    void shouldGiveSearchedUser() {
+        UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
+        when(mockUserRepo.findByUsernameStartingWithIgnoreCase(any(String.class))).thenReturn(List.of(
+                TestFactory.user("1"),
+                TestFactory.user("2"),
+                TestFactory.user("3")
+        ));
+
+        List<UserResponseDto> users = userService.search("us");
+        assertEquals(3, users.size());
+    }
+
+    @Test
+    void shouldGiveEmptyArrayIfNoUserPresentWithUserName() {
+        UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
+        when(mockUserRepo.findByUsernameStartingWithIgnoreCase(any(String.class))).thenReturn(List.of());
+
+        List<UserResponseDto> users = userService.search("us");
+        assertEquals(0, users.size());
     }
 }

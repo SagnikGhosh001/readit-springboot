@@ -84,7 +84,7 @@ public class PostServiceImplTest {
     void shouldThrowErrorForNonExistingUser() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         User user = TestFactory.user("1");
-        Post post = TestFactory.post("title", user);
+        Post post = TestFactory.post("1", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
 
         assertThrows(NotFoundException.class, () -> postService.toggleLike("1", "1"));
@@ -179,7 +179,7 @@ public class PostServiceImplTest {
     void shouldThrowErrorForNonExistingUserForDeletePost() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         User user = TestFactory.user("1");
-        Post post = TestFactory.post("title", user);
+        Post post = TestFactory.post("1", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
 
         assertThrows(NotFoundException.class, () -> postService.deletePost("1", "1"));
@@ -189,7 +189,7 @@ public class PostServiceImplTest {
     void shouldReturnDeletedPost() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         User user = TestFactory.user("1");
-        Post post = TestFactory.post("title", user);
+        Post post = TestFactory.post("1", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
 
@@ -201,7 +201,7 @@ public class PostServiceImplTest {
     void shouldNotDeletePostForTryingToDeleteOtherPost() {
         PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
         User user = TestFactory.user("user1");
-        Post post = TestFactory.post("title", user);
+        Post post = TestFactory.post("1", user);
         when(postMongoRepository.findById(any(String.class))).thenReturn(Optional.of(post));
         when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(user));
 

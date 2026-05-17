@@ -31,4 +31,10 @@ public class UserServiceTest {
         mockUserService.toggleSubscribe("1", "1");
         verify(mockUserService).toggleSubscribe("1", "1");
     }
+
+    @Test
+    void shouldCallSearch() {
+        mockUserService.search("username");
+        verify(mockUserService).search("username");
+    }
 }
