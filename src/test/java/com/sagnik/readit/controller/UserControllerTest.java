@@ -1,7 +1,7 @@
 package com.sagnik.readit.controller;
 
-import com.sagnik.readit.dto.UserDto;
 import com.sagnik.readit.repository.UserMongoRepository;
+import com.sagnik.readit.requestDto.UserRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -21,10 +21,10 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnLoginUserWithStatusCode() {
-        UserDto userDto = new UserDto("sagnik");
+        UserRequestDto userRequestDto = new UserRequestDto("sagnik");
         testClient.post()
                 .uri("/api/user/login")
-                .body(userDto)
+                .body(userRequestDto)
                 .exchange()
                 .expectStatus().isCreated();
     }

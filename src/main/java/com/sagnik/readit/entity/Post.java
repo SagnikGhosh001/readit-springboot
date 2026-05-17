@@ -1,16 +1,15 @@
 package com.sagnik.readit.entity;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.sagnik.readit.responseDto.PostResponseDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 @Document("feed")
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Post {
     @Id
-    private String Id;
+    private String id;
     private final String title;
     private final String body;
     private final Date createdAt;
@@ -23,4 +22,7 @@ public class Post {
         this.createdAt = new Date();
     }
 
+    public PostResponseDto toResponse() {
+        return new PostResponseDto(id, title, body, createdAt, user.toResponse());
+    }
 }

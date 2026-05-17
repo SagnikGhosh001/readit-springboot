@@ -1,8 +1,8 @@
 package com.sagnik.readit.service;
 
-import com.sagnik.readit.dto.PostDto;
-import com.sagnik.readit.entity.Post;
+import com.sagnik.readit.requestDto.PostRequestDto;
+import com.sagnik.readit.responseDto.PostResponseDto;
 
 public interface PostService {
-    Post createPost(PostDto postDto);
+    PostResponseDto createPost(PostRequestDto postRequestDto);
 }

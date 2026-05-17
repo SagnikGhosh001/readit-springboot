@@ -1,7 +1,8 @@
 package com.sagnik.readit.service;
 
-import com.sagnik.readit.dto.UserDto;
 import com.sagnik.readit.entity.User;
+import com.sagnik.readit.requestDto.UserRequestDto;
+import com.sagnik.readit.responseDto.UserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,10 +20,10 @@ public class UserServiceTest {
 
     @Test
     void shouldReturnLoginUser() {
-        UserDto userDto = new UserDto("Sagnik");
-        User user = new User("Sagnik");
-        when(mockUserService.login(userDto)).thenReturn(user);
-        User login = mockUserService.login(userDto);
-        assertEquals(user, login);
+        UserRequestDto userRequestDto = new UserRequestDto("Sagnik");
+        UserResponseDto user = new User("Sagnik").toResponse();
+        when(mockUserService.login(userRequestDto)).thenReturn(user);
+        UserResponseDto loginResponse = mockUserService.login(userRequestDto);
+        assertEquals(user, loginResponse);
     }
 }

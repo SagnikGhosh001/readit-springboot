@@ -1,7 +1,7 @@
 package com.sagnik.readit.controller;
 
-import com.sagnik.readit.dto.PostDto;
-import com.sagnik.readit.entity.Post;
+import com.sagnik.readit.requestDto.PostRequestDto;
+import com.sagnik.readit.responseDto.PostResponseDto;
 import com.sagnik.readit.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ public class PostController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Post> post(@RequestBody PostDto postDto) {
-        Post post = postService.createPost(postDto);
+    public ResponseEntity<PostResponseDto> post(@RequestBody PostRequestDto postRequestDto) {
+        PostResponseDto post = postService.createPost(postRequestDto);
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 }

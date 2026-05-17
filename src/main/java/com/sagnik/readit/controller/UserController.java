@@ -1,7 +1,7 @@
 package com.sagnik.readit.controller;
 
-import com.sagnik.readit.dto.UserDto;
-import com.sagnik.readit.entity.User;
+import com.sagnik.readit.requestDto.UserRequestDto;
+import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody UserDto userDto) {
-        User login = userService.login(userDto);
-        return new ResponseEntity<>(login, HttpStatus.CREATED);
+    public ResponseEntity<UserResponseDto> login(@RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto loginResponse = userService.login(userRequestDto);
+        return new ResponseEntity<>(loginResponse, HttpStatus.CREATED);
     }
 }

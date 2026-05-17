@@ -1,8 +1,9 @@
 package com.sagnik.readit.service;
 
-import com.sagnik.readit.dto.PostDto;
 import com.sagnik.readit.entity.Post;
 import com.sagnik.readit.entity.User;
+import com.sagnik.readit.requestDto.PostRequestDto;
+import com.sagnik.readit.responseDto.PostResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,13 +20,13 @@ public class PostServiceTest {
     }
 
     @Test
-    void shouldCreateTestWithUser() {
-        PostDto postDto = new PostDto("title", "body", "userId");
+    void shouldCreatePostWithUser() {
+        PostRequestDto postRequestDto = new PostRequestDto("title", "body", "userId");
         User user = new User("user1");
-        Post post = new Post("title", "body", user);
-        when(mockPostService.createPost(postDto)).thenReturn(post);
+        PostResponseDto post = new Post("title", "body", user).toResponse();
+        when(mockPostService.createPost(postRequestDto)).thenReturn(post);
 
-        Post newPost = mockPostService.createPost(postDto);
+        PostResponseDto newPost = mockPostService.createPost(postRequestDto);
         assertEquals(post, newPost);
     }
 }
