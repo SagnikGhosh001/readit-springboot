@@ -11,6 +11,7 @@
 
 ## improvement
 
+- [X] Logger
 - [] projector like ashish's example
 - [X] create a value object for sending response (ResponseDto)
 - [X] exception handling
