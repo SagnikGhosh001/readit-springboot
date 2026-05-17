@@ -1,6 +1,8 @@
 package com.sagnik.readit.controller;
 
-import com.sagnik.readit.dto.UserDto;
+import com.sagnik.readit.dto.PostDto;
+import com.sagnik.readit.entity.User;
+import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +11,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
+
+
 @SpringBootTest
 @AutoConfigureRestTestClient
-public class UserControllerTest {
-
+public class PostControllerTest {
     @Autowired
     RestTestClient testClient;
 
     @MockitoBean
     private UserMongoRepository userMongoRepository;
 
+    @MockitoBean
+    private PostMongoRepository postMongoRepository;
+
     @Test
     void shouldReturnLoginUserWithStatusCode() {
-        UserDto userDto = new UserDto("sagnik");
+        PostDto postDto = new PostDto("title", "body", "1");
+        when(userMongoRepository.findById("1")).thenReturn(Optional.of(new User("user1")));
+
         testClient.post()
-                .uri("/api/user/login")
-                .body(userDto)
+                .uri("/api/post/")
+                .body(postDto)
                 .exchange()
                 .expectStatus().isCreated();
     }
