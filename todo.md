@@ -2,7 +2,7 @@
 
 ## features
 
-- [] search user
+- [X] search user
 - [x] delete post
 - [X] get feed
 - [X] get user Post
