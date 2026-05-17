@@ -20,7 +20,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void shouldLoginUser() {
+    void shouldLoginNewUser() {
         UserServiceImpl userService = new UserServiceImpl(mockUserRepo);
         userService.login(new UserDto("Sagnik"));
         verify(mockUserRepo).insert(any(User.class));

@@ -3,12 +3,11 @@ package com.sagnik.readit.mongodbServiceImpl;
 import com.sagnik.readit.dto.PostDto;
 import com.sagnik.readit.entity.Post;
 import com.sagnik.readit.entity.User;
+import com.sagnik.readit.exception.NotFoundException;
 import com.sagnik.readit.repository.PostMongoRepository;
 import com.sagnik.readit.repository.UserMongoRepository;
 import com.sagnik.readit.service.PostService;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -22,8 +21,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(PostDto postDto) {
-        Optional<User> user = userMongoRepository.findById(postDto.userId());
-        Post post = new Post(postDto.title(), postDto.body(), user.get());
+        User user = userMongoRepository.findById(postDto.userId())
+                .orElseThrow(() -> new NotFoundException(String.format("User is not found with id %s", postDto.userId())));
+
+        Post post = new Post(postDto.title(), postDto.body(), user);
         postMongoRepository.insert(post);
         return post;
     }
