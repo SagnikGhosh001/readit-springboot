@@ -2,9 +2,10 @@
 
 ## features
 
-- [] get feed
-- [] get user Post
+- [] delete post
 - [] search user
+- [] get feed
+- [X] get user Post
 - [X] subscribe
 - [X] like
 

@@ -146,4 +146,37 @@ public class PostServiceImplTest {
 
         assertThrows(NotFoundException.class, () -> postService.getUserUploadedPost("user1"));
     }
+
+    @Test
+    void shouldGiveUserFeed() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of(
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1"))
+        ));
+
+        List<PostResponseDto> posts = postService.getUserFeed("user1");
+        assertEquals(3, posts.size());
+    }
+
+    @Test
+    void shouldGiveEmptyArrayIfNoPostInUserFeed() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of());
+
+        List<PostResponseDto> posts = postService.getUserFeed("user1");
+        assertEquals(0, posts.size());
+    }
+
+
+    @Test
+    void shouldThrowErrorIfNoUserAvailableInUserFeed() {
+        PostServiceImpl postService = new PostServiceImpl(postMongoRepository, userMongoRepository);
+        when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of());
+
+        assertThrows(NotFoundException.class, () -> postService.getUserUploadedPost("user1"));
+    }
 }

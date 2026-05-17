@@ -155,4 +155,32 @@ public class PostControllerTest {
         assert responseBody != null;
         assertEquals(3, responseBody.size());
     }
+
+    @Test
+    void shouldSendNotFoundIfUserIsNotPresentForGettingUserFeed() {
+        testClient.get()
+                .uri("/api/post/user-feed/1")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+
+    @Test
+    void shouldSendUserFeed() {
+        when(userMongoRepository.findById(any(String.class))).thenReturn(Optional.of(new User("user1")));
+        when(postMongoRepository.findFeed(any(String.class), any(List.class))).thenReturn(List.of(
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1")),
+                new Post("title1", "body", new User("user1"))
+        ));
+
+        List responseBody = testClient.get()
+                .uri("/api/post/user-feed/1")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(List.class).getResponseBody();
+
+        assert responseBody != null;
+        assertEquals(3, responseBody.size());
+    }
 }

@@ -3,6 +3,7 @@ package com.sagnik.readit.entity;
 import com.sagnik.readit.responseDto.SimpleUserDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ public class User {
     private String id;
     private final String username;
     private Date createdAt;
+    @DBRef(lazy = true)
     private List<User> subscribers;
+    @DBRef(lazy = true)
     private List<User> subscribed;
 
     public User(String username) {

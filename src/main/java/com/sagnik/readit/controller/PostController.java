@@ -35,4 +35,11 @@ public class PostController {
         List<PostResponseDto> posts = postService.getUserUploadedPost(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
+
+    @GetMapping("/user-feed/{userId}")
+    public ResponseEntity<List<PostResponseDto>> getUserFeed(@PathVariable String userId) {
+        List<PostResponseDto> posts = postService.getUserFeed(userId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 }

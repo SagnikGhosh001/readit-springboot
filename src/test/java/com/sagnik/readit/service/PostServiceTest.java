@@ -40,4 +40,11 @@ public class PostServiceTest {
         mockPostService.getUserUploadedPost("postId");
         verify(mockPostService).getUserUploadedPost("postId");
     }
+
+
+    @Test
+    void shouldCallGetUserFeed() {
+        mockPostService.getUserFeed("postId");
+        verify(mockPostService).getUserFeed("postId");
+    }
 }

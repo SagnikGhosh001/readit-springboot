@@ -11,4 +11,6 @@ public interface PostService {
     PostResponseDto toggleLike(String postId, String userId);
 
     List<PostResponseDto> getUserUploadedPost(String userId);
+
+    List<PostResponseDto> getUserFeed(String userId);
 }
