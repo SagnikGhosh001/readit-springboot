@@ -1,5 +1,6 @@
 package com.sagnik.readit.service;
 
+import com.sagnik.readit.entity.User;
 import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
 
@@ -11,4 +12,6 @@ public interface UserService {
     UserResponseDto toggleSubscribe(String hostId, String userId);
 
     List<UserResponseDto> search(String username);
+
+    User findByUserName(String username);
 }

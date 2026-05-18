@@ -32,15 +32,12 @@ public class UserControllerTest {
     @Test
     void shouldReturnLoginUserWithStatusCode() {
         UserRequestDto userRequestDto = new UserRequestDto("sagnik");
-        UserResponseDto responseBody = testClient.post()
-                .uri("/api/user/login")
+        testClient.post()
+                .uri("/api/auth/login")
                 .body(userRequestDto)
                 .exchange()
                 .expectStatus().isCreated()
-                .returnResult(UserResponseDto.class).getResponseBody();
-
-        assert responseBody != null;
-        assertEquals("sagnik", responseBody.username());
+                .expectCookie();
     }
 
     @Test

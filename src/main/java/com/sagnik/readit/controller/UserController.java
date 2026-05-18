@@ -1,6 +1,5 @@
 package com.sagnik.readit.controller;
 
-import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.service.UserService;
 import org.slf4j.Logger;
@@ -20,14 +19,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<UserResponseDto> login(@RequestBody UserRequestDto userRequestDto) {
-        logger.info("Logging in user with request {}", userRequestDto);
-        UserResponseDto loginResponse = userService.login(userRequestDto);
-        logger.info("Successfully logged in user with Id {}", loginResponse.id());
-        return new ResponseEntity<>(loginResponse, HttpStatus.CREATED);
-    }
+    
 
     @PutMapping("/toggle-subscribe/{hostId}/{userId}")
     public ResponseEntity<UserResponseDto> toggleSubscribe(@PathVariable String hostId, @PathVariable String userId) {

@@ -49,4 +49,9 @@ public class UserServiceImpl implements UserService {
                 .stream().map(u -> u.toResponse(UserResponseDto::new))
                 .toList();
     }
+
+    @Override
+    public User findByUserName(String username) {
+        return userMongoRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User is not found with username %s", username)));
+    }
 }
