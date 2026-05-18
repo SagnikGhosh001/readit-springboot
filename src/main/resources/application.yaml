@@ -2,7 +2,7 @@ spring:
   application:
     name: readit
   mongodb:
-    uri: mongodb://localhost:27017/test
+    uri: ${READIT_MONGO_URI:mongodb://localhost:27017/test}
 
 server:
   port: 8000
