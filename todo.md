@@ -2,6 +2,18 @@
 
 ## features
 
+- [] pagination
+- [] image support both user photo and post photo
+- [] jwt token
+- [] spring security
+- [] sse
+- [] github auth
+- [] search user post (fuzzy)
+- [] search user feed post (fuzzy)
+- [] auth to get data
+- [] logout
+- [] title generation
+
 - [X] search user
 - [x] delete post
 - [X] get feed
