@@ -1,4 +1,4 @@
-package com.sagnik.readit.filter;
+package com.sagnik.readit.config;
 
 import com.sagnik.readit.service.JwtService;
 import jakarta.servlet.FilterChain;

@@ -4,8 +4,6 @@
 
 - [] pagination
 - [] image support both user photo and post photo
-- [] jwt token
-- [] spring security
 - [] sse
 - [] github auth
 - [] search user post (fuzzy)
@@ -14,6 +12,8 @@
 - [] logout
 - [] title generation
 
+- [X] jwt token
+- [X] spring security
 - [X] search user
 - [x] delete post
 - [X] get feed
