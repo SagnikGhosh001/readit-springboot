@@ -1,9 +1,11 @@
 package com.sagnik.readit.controller;
 
-import com.sagnik.readit.config.MyUserDetailsService;
 import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.service.JwtService;
+import com.sagnik.readit.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -19,18 +21,21 @@ import java.time.Duration;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final JwtService jwtService;
-    private final MyUserDetailsService myUserDetailsService;
+    private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     @Value("${security.jwt.expiration-time}")
     private long EXPIRATION_TIME;
 
-    public AuthController(JwtService jwtService, MyUserDetailsService myUserDetailsService) {
+    public AuthController(JwtService jwtService, UserService userService) {
         this.jwtService = jwtService;
-        this.myUserDetailsService = myUserDetailsService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> register(@RequestBody UserRequestDto user) {
-        UserResponseDto userResponseDto = myUserDetailsService.login(user);
+    public ResponseEntity<?> login(@RequestBody UserRequestDto user) {
+        logger.info("Logging in user with request {}", user);
+        UserResponseDto userResponseDto = userService.login(user);
         String token = jwtService.generateToken(userResponseDto.username());
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true)
@@ -40,6 +45,7 @@ public class AuthController {
                 .maxAge(Duration.ofMillis(EXPIRATION_TIME))
                 .build();
 
+        logger.info("Successfully logged in user with Id {}", userResponseDto.id());
         return ResponseEntity.status(201)
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
