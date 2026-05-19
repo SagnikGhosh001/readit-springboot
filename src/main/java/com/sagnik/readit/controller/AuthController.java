@@ -4,6 +4,8 @@ import com.sagnik.readit.requestDto.UserRequestDto;
 import com.sagnik.readit.responseDto.UserResponseDto;
 import com.sagnik.readit.service.JwtService;
 import com.sagnik.readit.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,5 +51,16 @@ public class AuthController {
         return ResponseEntity.status(201)
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> post(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return ResponseEntity.ok("Cookie Deleted Successfully");
     }
 }
