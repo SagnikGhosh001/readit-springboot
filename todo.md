@@ -28,7 +28,10 @@
 - [X] create a value object for sending response (ResponseDto)
 - [X] exception handling
 - [X] add swagger
+- [] actuators
+- [] tracing
 
 # bug
 
 - [X] user created at changing everytime
+- [] oAUth Bug

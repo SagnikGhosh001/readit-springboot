@@ -31,8 +31,7 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String userEmail;
+
 
         final String jwt = Arrays.stream(request.getCookies() != null ? request.getCookies() : new Cookie[0])
                 .filter(c -> "jwt".equals(c.getName()))
@@ -46,7 +45,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         try {
-            userEmail = jwtService.extractUsername(jwt);
+            final String userEmail = jwtService.extractUsername(jwt);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);

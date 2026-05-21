@@ -1,5 +1,6 @@
 package com.sagnik.readit.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,16 +15,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class Security {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JWTFilter jwtFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JWTFilter jwtFilter, @Value("${unprotected.endpoints}") String unprotectedEndpoints) throws Exception {
         httpSecurity
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        .requestMatchers("/oauth2/**", "/api/auth/**", "/login/**", "/").permitAll()
+                        .requestMatchers(unprotectedEndpoints.split(",")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable);
+//                .oauth2Login(oAuth2 -> oAuth2.successHandler(successHandler));
 
         return httpSecurity.build();
     }
